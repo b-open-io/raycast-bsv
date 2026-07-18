@@ -1,7 +1,11 @@
 import { Clipboard, type LaunchProps, showHUD } from "@raycast/api";
 import { addressFromPublicKeyHash } from "./lib/bitcoin";
 
-export default async function Command(props: LaunchProps<{ arguments: Arguments.AddressFromPubkeyHash }>) {
+interface CommandArguments {
+  pubkeyHash: string;
+}
+
+export default async function Command(props: LaunchProps<{ arguments: CommandArguments }>) {
   try {
     const address = addressFromPublicKeyHash(props.arguments.pubkeyHash);
     await Clipboard.copy(address);
