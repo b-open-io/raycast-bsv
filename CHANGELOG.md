@@ -1,4 +1,4 @@
-# Bitcoin SV Tools Changelog
+# Bitcoin Tools Changelog
 
 ## [Release Preparation] - {PR_MERGE_DATE}
 

@@ -1,6 +1,6 @@
-# Bitcoin SV Tools for Raycast
+# Bitcoin Tools for Raycast
 
-Bitcoin SV Tools is a Raycast extension for common BSV key, address, script, transaction, and market-data workflows. All cryptographic operations use [`@bsv/sdk`](https://www.npmjs.com/package/@bsv/sdk).
+Bitcoin Tools is a Raycast extension for common BSV key, address, script, transaction, and market-data workflows. All cryptographic operations use [`@bsv/sdk`](https://www.npmjs.com/package/@bsv/sdk).
 
 ## Commands
 
