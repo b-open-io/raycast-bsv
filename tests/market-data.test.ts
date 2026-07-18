@@ -60,7 +60,10 @@ test("keeps price data available when the chain API fails", async () => {
 test("rejects malformed required ticker fields", async () => {
   const fetcher = (async (input: string | URL | Request) => {
     if (String(input) === COINPAPRIKA_TICKER_URL) {
-      return jsonResponse({ ...ticker, quotes: { USD: { ...ticker.quotes.USD, price: "13.44" } } });
+      return jsonResponse({
+        ...ticker,
+        quotes: { USD: { ...ticker.quotes.USD, price: "13.44" } },
+      });
     }
     return jsonResponse({ blocks: 958_431 });
   }) as typeof fetch;
@@ -81,8 +84,16 @@ test("accepts valid cached data and rejects corrupt cache entries", () => {
   assert.deepEqual(parseCachedSnapshot(JSON.stringify(snapshot)), snapshot);
   assert.equal(parseCachedSnapshot(undefined), undefined);
   assert.equal(parseCachedSnapshot("not json"), undefined);
-  assert.equal(parseCachedSnapshot(JSON.stringify({ ...snapshot, priceUsd: null })), undefined);
-  assert.equal(parseCachedSnapshot(JSON.stringify({ ...snapshot, updatedAt: "not a date" })), undefined);
+  assert.equal(
+    parseCachedSnapshot(JSON.stringify({ ...snapshot, priceUsd: null })),
+    undefined,
+  );
+  assert.equal(
+    parseCachedSnapshot(
+      JSON.stringify({ ...snapshot, updatedAt: "not a date" }),
+    ),
+    undefined,
+  );
 });
 
 test("returns last-known-good data instead of rejecting during a total outage", async () => {
@@ -94,9 +105,13 @@ test("returns last-known-good data instead of rejecting during a total outage", 
     blockHeight: 958_431,
     updatedAt: "2026-07-18T15:07:16.000Z",
   };
-  const unavailableFetcher = (async () => jsonResponse({ error: "unavailable" }, 503)) as typeof fetch;
+  const unavailableFetcher = (async () =>
+    jsonResponse({ error: "unavailable" }, 503)) as typeof fetch;
 
-  const state = await resolveMarketState(JSON.stringify(snapshot), unavailableFetcher);
+  const state = await resolveMarketState(
+    JSON.stringify(snapshot),
+    unavailableFetcher,
+  );
   assert.deepEqual(state.snapshot, snapshot);
   assert.equal(state.isStale, true);
   assert.match(state.error ?? "", /HTTP 503/);

@@ -39,9 +39,17 @@ export interface DecodedTransaction {
 }
 
 function normalizeHex(value: string, label: string): string {
-  const normalized = value.trim().replace(/^0x/i, "").replaceAll(/\s/g, "").toLowerCase();
+  const normalized = value
+    .trim()
+    .replace(/^0x/i, "")
+    .replaceAll(/\s/g, "")
+    .toLowerCase();
 
-  if (normalized.length === 0 || normalized.length % 2 !== 0 || !HEX_PATTERN.test(normalized)) {
+  if (
+    normalized.length === 0 ||
+    normalized.length % 2 !== 0 ||
+    !HEX_PATTERN.test(normalized)
+  ) {
     throw new Error(`${label} must be an even-length hexadecimal value.`);
   }
 
@@ -56,7 +64,12 @@ export function addressFromWif(value: string): WifAddress {
 
   const decoded = Utils.fromBase58Check(wif);
   const prefix = Array.isArray(decoded.prefix) ? decoded.prefix[0] : Number.NaN;
-  const network = prefix === MAINNET_WIF_PREFIX ? "mainnet" : prefix === TESTNET_WIF_PREFIX ? "testnet" : undefined;
+  const network =
+    prefix === MAINNET_WIF_PREFIX
+      ? "mainnet"
+      : prefix === TESTNET_WIF_PREFIX
+        ? "testnet"
+        : undefined;
 
   if (!network) {
     throw new Error("WIF must use the BSV mainnet or testnet prefix.");
@@ -66,24 +79,34 @@ export function addressFromWif(value: string): WifAddress {
   return { address: privateKey.toAddress(network), network };
 }
 
-export function addressFromPublicKeyHash(value: string, network: BitcoinNetwork = "mainnet"): string {
+export function addressFromPublicKeyHash(
+  value: string,
+  network: BitcoinNetwork = "mainnet",
+): string {
   const publicKeyHash = normalizeHex(value, "Public key hash");
   if (publicKeyHash.length !== 40) {
-    throw new Error("Public key hash must contain exactly 20 bytes (40 hexadecimal characters).");
+    throw new Error(
+      "Public key hash must contain exactly 20 bytes (40 hexadecimal characters).",
+    );
   }
 
   const prefix = network === "mainnet" ? [0x00] : [0x6f];
   return Utils.toBase58Check(Utils.toArray(publicKeyHash, "hex"), prefix);
 }
 
-export function p2pkhScriptFromAddress(addressValue: string): { asm: string; hex: string } {
+export function p2pkhScriptFromAddress(addressValue: string): {
+  asm: string;
+  hex: string;
+} {
   const address = addressValue.trim();
   const decoded = Utils.fromBase58Check(address);
   const data = Array.isArray(decoded.data) ? decoded.data : [];
   const prefix = Array.isArray(decoded.prefix) ? decoded.prefix[0] : Number.NaN;
 
   if (data.length !== 20 || (prefix !== 0x00 && prefix !== 0x6f)) {
-    throw new Error("Address must be a valid BSV P2PKH mainnet or testnet address.");
+    throw new Error(
+      "Address must be a valid BSV P2PKH mainnet or testnet address.",
+    );
   }
 
   const script = new P2PKH().lock(address);
@@ -117,7 +140,8 @@ export function decodeTransaction(rawValue: string): DecodedTransaction {
 
   const inputs = transaction.inputs.map((input, index) => ({
     index,
-    sourceTransactionId: input.sourceTXID ?? input.sourceTransaction?.id("hex") ?? "",
+    sourceTransactionId:
+      input.sourceTXID ?? input.sourceTransaction?.id("hex") ?? "",
     sourceOutputIndex: input.sourceOutputIndex,
     sequence: input.sequence ?? 0xffffffff,
     unlockingScriptHex: input.unlockingScript?.toHex() ?? "",
@@ -136,7 +160,10 @@ export function decodeTransaction(rawValue: string): DecodedTransaction {
     version: transaction.version,
     lockTime: transaction.lockTime,
     sizeBytes: rawTransaction.length / 2,
-    totalOutputSatoshis: outputs.reduce((total, output) => total + output.satoshis, 0),
+    totalOutputSatoshis: outputs.reduce(
+      (total, output) => total + output.satoshis,
+      0,
+    ),
     rawTransaction,
     inputs,
     outputs,

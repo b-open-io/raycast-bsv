@@ -5,7 +5,11 @@ interface OutputPreferences {
   insert: boolean;
 }
 
-export async function outputGeneratedValue(value: string, label: string, sensitive = false): Promise<void> {
+export async function outputGeneratedValue(
+  value: string,
+  label: string,
+  sensitive = false,
+): Promise<void> {
   const preferences = getPreferenceValues<OutputPreferences>();
 
   if (preferences.copy) {
@@ -15,12 +19,25 @@ export async function outputGeneratedValue(value: string, label: string, sensiti
     await Clipboard.paste(value);
   }
 
-  const destination = [preferences.copy && "copied", preferences.insert && "inserted"].filter(Boolean).join(" and ");
+  const destination = [
+    preferences.copy && "copied",
+    preferences.insert && "inserted",
+  ]
+    .filter(Boolean)
+    .join(" and ");
   const valueDescription = sensitive ? label : `${label} ${value}`;
-  await showHUD(destination ? `${valueDescription} ${destination}` : `${valueDescription} generated`);
+  await showHUD(
+    destination
+      ? `${valueDescription} ${destination}`
+      : `${valueDescription} generated`,
+  );
 }
 
-export async function generateAndOutput(generate: () => string, label: string, sensitive = false): Promise<void> {
+export async function generateAndOutput(
+  generate: () => string,
+  label: string,
+  sensitive = false,
+): Promise<void> {
   try {
     await outputGeneratedValue(generate(), label, sensitive);
   } catch (error) {
