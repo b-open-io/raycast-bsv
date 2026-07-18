@@ -37,12 +37,18 @@ test("preserves the network encoded in a testnet WIF", () => {
 
 test("rejects WIF values with an unsupported prefix", () => {
   const unsupportedWif = PrivateKey.fromWif(KNOWN_WIF).toWif([0x81]);
-  assert.throws(() => addressFromWif(unsupportedWif), /mainnet or testnet prefix/);
+  assert.throws(
+    () => addressFromWif(unsupportedWif),
+    /mainnet or testnet prefix/,
+  );
 });
 
 test("converts a 20-byte public key hash to a mainnet address", () => {
   assert.equal(addressFromPublicKeyHash(KNOWN_PUBLIC_KEY_HASH), KNOWN_ADDRESS);
-  assert.equal(addressFromPublicKeyHash(`0x${KNOWN_PUBLIC_KEY_HASH.toUpperCase()}`), KNOWN_ADDRESS);
+  assert.equal(
+    addressFromPublicKeyHash(`0x${KNOWN_PUBLIC_KEY_HASH.toUpperCase()}`),
+    KNOWN_ADDRESS,
+  );
   assert.throws(() => addressFromPublicKeyHash("abcd"), /exactly 20 bytes/);
 });
 
@@ -83,5 +89,8 @@ test("decodes and summarizes a canonical raw transaction", () => {
 
 test("rejects malformed and trailing transaction data", () => {
   assert.throws(() => decodeTransaction("not hex"), /hexadecimal/);
-  assert.throws(() => decodeTransaction(`${RAW_TRANSACTION}00`), /trailing or non-canonical/);
+  assert.throws(
+    () => decodeTransaction(`${RAW_TRANSACTION}00`),
+    /trailing or non-canonical/,
+  );
 });
