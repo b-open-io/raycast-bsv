@@ -12,11 +12,7 @@ export default function Command() {
     : "BSV market data is temporarily unavailable";
 
   return (
-    <MenuBarExtra
-      tooltip={tooltip}
-      title={price ? `$${price}` : "BSV"}
-      isLoading={isLoading && !snapshot}
-    >
+    <MenuBarExtra tooltip={tooltip} title={price ? `$${price}` : "BSV"} isLoading={isLoading && !snapshot}>
       <MenuBarExtra.Item
         title="View BSV Market Data"
         icon={Icon.LineChart}
@@ -34,26 +30,18 @@ export default function Command() {
           <MenuBarExtra.Item
             title={`24h Change: ${snapshot.percentChange24h >= 0 ? "+" : ""}${snapshot.percentChange24h.toFixed(2)}%`}
           />
-          {blockHeight ? (
-            <MenuBarExtra.Item title={`Block Height: ${blockHeight}`} />
-          ) : null}
+          {blockHeight ? <MenuBarExtra.Item title={`Block Height: ${blockHeight}`} /> : null}
         </>
       ) : null}
       {data?.isStale ? (
         <MenuBarExtra.Item
-          title={
-            snapshot ? "Showing Last Known Data" : "Market Data Unavailable"
-          }
+          title={snapshot ? "Showing Last Known Data" : "Market Data Unavailable"}
           subtitle={data.error}
           icon={Icon.Warning}
         />
       ) : null}
       <MenuBarExtra.Separator />
-      <MenuBarExtra.Item
-        title="Refresh"
-        icon={Icon.ArrowClockwise}
-        onAction={revalidate}
-      />
+      <MenuBarExtra.Item title="Refresh" icon={Icon.ArrowClockwise} onAction={revalidate} />
     </MenuBarExtra>
   );
 }

@@ -5,9 +5,7 @@ interface CommandArguments {
   wif: string;
 }
 
-export default async function Command(
-  props: LaunchProps<{ arguments: CommandArguments }>,
-) {
+export default async function Command(props: LaunchProps<{ arguments: CommandArguments }>) {
   try {
     const { address } = addressFromWif(props.arguments.wif);
     await Clipboard.copy(address);

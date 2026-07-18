@@ -5,9 +5,7 @@ interface CommandArguments {
   pubkeyHash: string;
 }
 
-export default async function Command(
-  props: LaunchProps<{ arguments: CommandArguments }>,
-) {
+export default async function Command(props: LaunchProps<{ arguments: CommandArguments }>) {
   try {
     const address = addressFromPublicKeyHash(props.arguments.pubkeyHash);
     await Clipboard.copy(address);

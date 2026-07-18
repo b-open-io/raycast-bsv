@@ -1,14 +1,4 @@
-import {
-  Action,
-  ActionPanel,
-  Clipboard,
-  closeMainWindow,
-  Form,
-  Icon,
-  showHUD,
-  showToast,
-  Toast,
-} from "@raycast/api";
+import { Action, ActionPanel, Clipboard, closeMainWindow, Form, Icon, showHUD, showToast, Toast } from "@raycast/api";
 import { p2pkhScriptFromAddress } from "./lib/bitcoin";
 
 interface FormValues {
@@ -38,19 +28,11 @@ export default function Command() {
     <Form
       actions={
         <ActionPanel>
-          <Action.SubmitForm
-            title="Copy P2PKH Script"
-            icon={Icon.Clipboard}
-            onSubmit={handleSubmit}
-          />
+          <Action.SubmitForm title="Copy P2PKH Script" icon={Icon.Clipboard} onSubmit={handleSubmit} />
         </ActionPanel>
       }
     >
-      <Form.TextField
-        id="address"
-        title="Address"
-        placeholder="Enter a BSV address"
-      />
+      <Form.TextField id="address" title="Address" placeholder="Enter a BSV address" />
       <Form.Dropdown id="format" title="Output Format" defaultValue="asm">
         <Form.Dropdown.Item value="asm" title="ASM" />
         <Form.Dropdown.Item value="hex" title="Hex" />

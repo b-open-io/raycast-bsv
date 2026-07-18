@@ -1,11 +1,4 @@
-import {
-  Action,
-  ActionPanel,
-  Detail,
-  Form,
-  Icon,
-  useNavigation,
-} from "@raycast/api";
+import { Action, ActionPanel, Detail, Form, Icon, useNavigation } from "@raycast/api";
 import { useState } from "react";
 import { type DecodedTransaction, decodeTransaction } from "./lib/bitcoin";
 
@@ -65,11 +58,7 @@ ${inputs || "No inputs"}
 ${outputs || "No outputs"}`;
 }
 
-function TransactionDetail({
-  transaction,
-}: {
-  transaction: DecodedTransaction;
-}) {
+function TransactionDetail({ transaction }: { transaction: DecodedTransaction }) {
   const json = JSON.stringify(transaction, null, 2);
 
   return (
@@ -77,10 +66,7 @@ function TransactionDetail({
       markdown={transactionMarkdown(transaction)}
       actions={
         <ActionPanel>
-          <Action.CopyToClipboard
-            title="Copy Transaction ID"
-            content={transaction.transactionId}
-          />
+          <Action.CopyToClipboard title="Copy Transaction ID" content={transaction.transactionId} />
           <Action.CopyToClipboard
             title="Copy Decoded JSON"
             content={json}
@@ -107,11 +93,7 @@ export default function Command() {
       setError(undefined);
       push(<TransactionDetail transaction={transaction} />);
     } catch (submitError) {
-      setError(
-        submitError instanceof Error
-          ? submitError.message
-          : "Enter a valid raw transaction.",
-      );
+      setError(submitError instanceof Error ? submitError.message : "Enter a valid raw transaction.");
     }
   }
 
@@ -119,11 +101,7 @@ export default function Command() {
     <Form
       actions={
         <ActionPanel>
-          <Action.SubmitForm
-            title="Decode Transaction"
-            icon={Icon.Code}
-            onSubmit={handleSubmit}
-          />
+          <Action.SubmitForm title="Decode Transaction" icon={Icon.Code} onSubmit={handleSubmit} />
         </ActionPanel>
       }
     >

@@ -1,9 +1,6 @@
-export const COINPAPRIKA_TICKER_URL =
-  "https://api.coinpaprika.com/v1/tickers/bsv-bitcoin-sv";
-export const WHATSONCHAIN_INFO_URL =
-  "https://api.whatsonchain.com/v1/bsv/main/chain/info";
-export const COINPAPRIKA_BSV_URL =
-  "https://coinpaprika.com/coin/bsv-bitcoin-sv/";
+export const COINPAPRIKA_TICKER_URL = "https://api.coinpaprika.com/v1/tickers/bsv-bitcoin-sv";
+export const WHATSONCHAIN_INFO_URL = "https://api.whatsonchain.com/v1/bsv/main/chain/info";
+export const COINPAPRIKA_BSV_URL = "https://coinpaprika.com/coin/bsv-bitcoin-sv/";
 
 const REQUEST_TIMEOUT_MS = 10_000;
 const RETRY_DELAY_MS = 250;
@@ -52,11 +49,7 @@ function sleep(milliseconds: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
-async function fetchJson(
-  url: string,
-  fetcher: Fetcher,
-  attempts = 2,
-): Promise<unknown> {
+async function fetchJson(url: string, fetcher: Fetcher, attempts = 2): Promise<unknown> {
   let lastError: unknown;
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
@@ -84,14 +77,10 @@ async function fetchJson(
     }
   }
 
-  throw lastError instanceof Error
-    ? lastError
-    : new Error("Market request failed.");
+  throw lastError instanceof Error ? lastError : new Error("Market request failed.");
 }
 
-export async function fetchMarketSnapshot(
-  fetcher: Fetcher = fetch,
-): Promise<MarketSnapshot> {
+export async function fetchMarketSnapshot(fetcher: Fetcher = fetch): Promise<MarketSnapshot> {
   const [tickerResult, chainResult] = await Promise.allSettled([
     fetchJson(COINPAPRIKA_TICKER_URL, fetcher),
     fetchJson(WHATSONCHAIN_INFO_URL, fetcher),
@@ -103,10 +92,7 @@ export async function fetchMarketSnapshot(
 
   const ticker = tickerResult.value as CoinPaprikaTicker;
   const usd = ticker.quotes?.USD;
-  const updatedAt =
-    typeof ticker.last_updated === "string"
-      ? ticker.last_updated
-      : new Date().toISOString();
+  const updatedAt = typeof ticker.last_updated === "string" ? ticker.last_updated : new Date().toISOString();
   const parsedUpdatedAt = new Date(updatedAt);
 
   if (!usd || Number.isNaN(parsedUpdatedAt.getTime())) {
@@ -116,11 +102,7 @@ export async function fetchMarketSnapshot(
   let blockHeight: number | undefined;
   if (chainResult.status === "fulfilled") {
     const blocks = (chainResult.value as ChainInfo).blocks;
-    if (
-      typeof blocks === "number" &&
-      Number.isSafeInteger(blocks) &&
-      blocks >= 0
-    ) {
+    if (typeof blocks === "number" && Number.isSafeInteger(blocks) && blocks >= 0) {
       blockHeight = blocks;
     }
   }
@@ -135,9 +117,7 @@ export async function fetchMarketSnapshot(
   };
 }
 
-export function parseCachedSnapshot(
-  value: string | undefined,
-): MarketSnapshot | undefined {
+export function parseCachedSnapshot(value: string | undefined): MarketSnapshot | undefined {
   if (!value) {
     return undefined;
   }
@@ -156,8 +136,7 @@ export function parseCachedSnapshot(
       typeof snapshot.updatedAt !== "string" ||
       Number.isNaN(new Date(snapshot.updatedAt).getTime()) ||
       (snapshot.blockHeight !== undefined &&
-        (typeof snapshot.blockHeight !== "number" ||
-          !Number.isSafeInteger(snapshot.blockHeight)))
+        (typeof snapshot.blockHeight !== "number" || !Number.isSafeInteger(snapshot.blockHeight)))
     ) {
       return undefined;
     }
@@ -169,9 +148,7 @@ export function parseCachedSnapshot(
 }
 
 export function errorMessage(error: unknown): string {
-  return error instanceof Error
-    ? error.message
-    : "Market data is temporarily unavailable.";
+  return error instanceof Error ? error.message : "Market data is temporarily unavailable.";
 }
 
 export async function resolveMarketState(
